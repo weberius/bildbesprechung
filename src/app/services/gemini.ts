@@ -29,14 +29,9 @@ export class GeminiService {
     const prompts = await this.loadPrompts();
 
     const results = await Promise.all(prompts.map(async (item) => {
-      try {
-        const result = await this.model.generateContent([item.prompt, base64Image]);
-        const response = await result.response;
-        return { title: item.title, content: response.text() };
-      } catch (error) {
-        console.error(`Error processing prompt "${item.title}":`, error);
-        return { title: item.title, content: 'Fehler bei der Generierung.' };
-      }
+      const result = await this.model.generateContent([item.prompt, base64Image]);
+      const response = await result.response;
+      return { title: item.title, content: response.text() };
     }));
 
     return this.markdownService.generateReport(results);
